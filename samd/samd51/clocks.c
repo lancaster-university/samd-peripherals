@@ -28,10 +28,12 @@
 
 #include "hpl_gclk_config.h"
 
+#ifdef PY
 #include "bindings/samd/Clock.h"
 #include "shared-bindings/microcontroller/__init__.h"
 
 #include "py/runtime.h"
+#endif
 
 bool gclk_enabled(uint8_t gclk) {
     return GCLK->GENCTRL[gclk].bit.GENEN;
@@ -343,6 +345,8 @@ int clock_set_calibration(uint8_t type, uint8_t index, uint32_t val) {
 void save_usb_clock_calibration(void) {
 }
 
+#ifdef PY
+
 #include <instance/can0.h>
 #include <instance/can1.h>
 #include <instance/i2s.h>
@@ -478,3 +482,5 @@ STATIC const mp_rom_map_elem_t samd_clock_global_dict_table[] = {
     CLOCK_ENTRY(RTC),
 };
 MP_DEFINE_CONST_DICT(samd_clock_globals, samd_clock_global_dict_table);
+
+#endif // PY

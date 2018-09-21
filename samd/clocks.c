@@ -28,9 +28,11 @@
 
 #include "hpl_gclk_config.h"
 
+#ifdef PY
 #include "shared-bindings/microcontroller/__init__.h"
 
 #include "py/runtime.h"
+#endif
 
 // TODO(tannewt): Should we have a way of sharing GCLKs based on their speed? Divisor doesn't
 // gaurantee speed because it depends on the source.
