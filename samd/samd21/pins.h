@@ -38,6 +38,11 @@
 #define PINMUX(pin, mux) ((((uint32_t) pin) << 16) | (mux))
 
 #define NO_PIN PORT_BITS
+#define PIN_NONE NO_PIN
+
+#ifdef SAMD_PIN_ARRAY
+extern const mcu_pin_obj_t samd_pins[];
+#else
 
 // Pins in datasheet order.
 #ifdef PIN_PA00
@@ -209,5 +214,7 @@ extern const mcu_pin_obj_t pin_PC18;
 #ifdef PIN_PC19
 extern const mcu_pin_obj_t pin_PC19;
 #endif
+
+#endif // SAMD_PIN_ARRAY
 
 #endif  // MICROPY_INCLUDED_ATMEL_SAMD_PERIPHERALS_SAMD21_PINS_H
