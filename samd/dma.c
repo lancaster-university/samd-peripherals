@@ -27,12 +27,7 @@
 
 #include <string.h>
 
-#include "py/gc.h"
-#include "py/mpstate.h"
-
 #include "hal/utils/include/utils.h"
-
-#include "shared-bindings/microcontroller/__init__.h"
 
 COMPILER_ALIGNED(16) static DmacDescriptor dma_descriptors[DMA_CHANNEL_COUNT];
 

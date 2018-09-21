@@ -27,12 +27,7 @@
 
 #include <string.h>
 
-#include "py/gc.h"
-#include "py/mpstate.h"
-
 #include "hal/utils/include/utils.h"
-
-#include "shared-bindings/microcontroller/__init__.h"
 
 uint8_t sercom_index(Sercom* sercom) {
     const Sercom* sercoms[SERCOM_INST_NUM] = SERCOM_INSTS;
