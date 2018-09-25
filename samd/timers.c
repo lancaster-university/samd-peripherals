@@ -29,7 +29,9 @@
 
 #include "timers.h"
 
+#ifdef PY
 #include "common-hal/pulseio/PulseOut.h"
+#endif
 
 const uint16_t prescaler[8] = {1, 2, 4, 8, 16, 64, 256, 1024};
 
@@ -88,10 +90,12 @@ void tc_reset(Tc* tc) {
 }
 
 void shared_timer_handler(bool is_tc, uint8_t index) {
+#ifdef PY
     // Add calls to interrupt handlers for specific functionality here.
     if (is_tc) {
         pulseout_interrupt_handler(index);
     }
+#endif
 }
 
 #ifdef SAMD51
