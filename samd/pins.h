@@ -77,4 +77,10 @@ typedef struct {
 #include "samd/samd51/pins.h"
 #endif
 
+#ifdef SAMD_PIN_ARRAY
+
+const mcu_pin_obj_t* samd_peripherals_get_pin(uint8_t number);
+
+#endif
+
 #endif // MICROPY_INCLUDED_ATMEL_SAMD_PERIPHERALS_PINS_H

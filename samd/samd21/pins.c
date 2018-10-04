@@ -580,4 +580,6 @@ PIN(NONE, NO_EXTINT, NO_ADC, NO_TOUCH,
     NO_TIMER,
     NO_TIMER)
 };
+
+const int samd_pins_len = sizeof(samd_pins) / sizeof(mcu_pin_obj_t)
 #endif
