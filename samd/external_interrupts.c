@@ -24,12 +24,14 @@
  * THE SOFTWARE.
  */
 #ifdef PY
-#include "common-hal/pulseio/PulseIn.h"
-#include "common-hal/rotaryio/IncrementalEncoder.h"
-#include "shared-bindings/microcontroller/__init__.h"
+    #include "common-hal/pulseio/PulseIn.h"
+    #include "common-hal/rotaryio/IncrementalEncoder.h"
+    #include "shared-bindings/microcontroller/__init__.h"
+#else
+    #include <stddef.h>
 #endif
 
-#include <stddef.h>
+
 #include "samd/external_interrupts.h"
 
 #include "sam.h"
