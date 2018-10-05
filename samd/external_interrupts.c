@@ -23,10 +23,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-#include "common-hal/pulseio/PulseIn.h"
-#include "common-hal/rotaryio/IncrementalEncoder.h"
-#include "shared-bindings/microcontroller/__init__.h"
+#include <stddef.h>
 #include "samd/external_interrupts.h"
 
 #include "sam.h"
@@ -37,13 +34,11 @@
 static void *channel_data[EIC_EXTINT_NUM];
 static uint8_t channel_handler[EIC_EXTINT_NUM];
 
+void (*app_handler)(uint8_t);
 void external_interrupt_handler(uint8_t channel) {
-    uint8_t handler = channel_handler[channel];
-    if (handler == EIC_HANDLER_PULSEIN) {
-        pulsein_interrupt_handler(channel);
-    } else if (handler == EIC_HANDLER_INCREMENTAL_ENCODER) {
-        incrementalencoder_interrupt_handler(channel);
-    }
+    if (app_handler)
+        app_handler(channel);
+
     EIC->INTFLAG.reg = (1 << channel) << EIC_INTFLAG_EXTINT_Pos;
 }
 
@@ -53,26 +48,21 @@ void configure_eic_channel(uint8_t eic_channel, uint32_t sense_setting) {
     #ifdef SAMD51
     eic_set_enable(false);
     #endif
-    common_hal_mcu_disable_interrupts();
+    // common_hal_mcu_disable_interrupts();
     uint32_t masked_value = EIC->CONFIG[config_index].reg & ~(0xf << position);
     EIC->CONFIG[config_index].reg = masked_value | (sense_setting << position);
-    common_hal_mcu_enable_interrupts();
+    // common_hal_mcu_enable_interrupts();
     #ifdef SAMD51
     eic_set_enable(true);
     #endif
 }
 
-void turn_on_eic_channel(uint8_t eic_channel, uint32_t sense_setting,
-                         uint8_t channel_interrupt_handler) {
+void turn_on_eic_channel(uint8_t eic_channel, uint32_t sense_setting) {
     // We do very light filtering using majority voting.
     sense_setting |= EIC_CONFIG_FILTEN0;
     configure_eic_channel(eic_channel, sense_setting);
     uint32_t mask = 1 << eic_channel;
     EIC->INTENSET.reg = mask << EIC_INTENSET_EXTINT_Pos;
-    if (channel_interrupt_handler != EIC_HANDLER_NO_INTERRUPT) {
-        channel_handler[eic_channel] = channel_interrupt_handler;
-        turn_on_cpu_interrupt(eic_channel);
-    }
 }
 
 void turn_off_eic_channel(uint8_t eic_channel) {
@@ -102,4 +92,9 @@ void* get_eic_channel_data(uint8_t eic_channel) {
 
 void set_eic_channel_data(uint8_t eic_channel, void* data) {
     channel_data[eic_channel] = data;
+}
+
+void set_eic_irq_handler(void (*handler)(uint8_t))
+{
+    app_handler = handler;
 }

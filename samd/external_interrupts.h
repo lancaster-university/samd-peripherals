@@ -37,8 +37,7 @@
 void turn_on_external_interrupt_controller(void);
 void turn_off_external_interrupt_controller(void);
 void turn_on_cpu_interrupt(uint8_t eic_channel);
-void turn_on_eic_channel(uint8_t eic_channel, uint32_t sense_setting,
-                         uint8_t channel_interrupt_handler);
+void turn_on_eic_channel(uint8_t eic_channel, uint32_t sense_setting);
 void configure_eic_channel(uint8_t eic_channel, uint32_t sense_setting);
 void turn_off_eic_channel(uint8_t eic_channel);
 bool eic_channel_free(uint8_t eic_channel);
@@ -50,5 +49,6 @@ void* get_eic_channel_data(uint8_t eic_channel);
 void set_eic_channel_data(uint8_t eic_channel, void* data);
 
 void external_interrupt_handler(uint8_t channel);
+void set_eic_irq_handler(void (*handler)(uint8_t));
 
 #endif  // MICROPY_INCLUDED_ATMEL_SAMD_PERIPHERALS_EXTERNAL_INTERRUPTS_H
