@@ -87,7 +87,6 @@ void turn_on_eic_channel(uint8_t eic_channel, uint32_t sense_setting, uint8_t ch
     configure_eic_channel(eic_channel, sense_setting);
     uint32_t mask = 1 << eic_channel;
     EIC->INTENSET.reg = mask << EIC_INTENSET_EXTINT_Pos;
-
     if (channel_interrupt_handler != EIC_HANDLER_NO_INTERRUPT) {
         channel_handler[eic_channel] = channel_interrupt_handler;
         turn_on_cpu_interrupt(eic_channel);
