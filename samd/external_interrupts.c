@@ -42,7 +42,7 @@
 static void *channel_data[EIC_EXTINT_NUM];
 static uint8_t channel_handler[EIC_EXTINT_NUM];
 
-void (*app_handler)(uint8_t);
+void (*app_handler)(uint8_t) = NULL;
 
 void external_interrupt_handler(uint8_t channel) {
     uint8_t handler = channel_handler[channel];
