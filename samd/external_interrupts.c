@@ -23,6 +23,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#ifdef PY
+#include "common-hal/pulseio/PulseIn.h"
+#include "common-hal/rotaryio/IncrementalEncoder.h"
+#include "shared-bindings/microcontroller/__init__.h"
+#endif
+
 #include <stddef.h>
 #include "samd/external_interrupts.h"
 
@@ -52,7 +58,7 @@ void external_interrupt_handler(uint8_t channel) {
     }
 
     EIC->INTFLAG.reg = (1 << channel) << EIC_INTFLAG_EXTINT_Pos;
- }
+}
 
 void configure_eic_channel(uint8_t eic_channel, uint32_t sense_setting) {
     uint8_t config_index = eic_channel / 8;
