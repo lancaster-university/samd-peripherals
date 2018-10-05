@@ -80,7 +80,7 @@ bool eic_channel_free(uint8_t eic_channel) {
 void EIC_Handler(void) {
     for (uint8_t i = 0; i < 16; i++) {
         if ((EIC->INTFLAG.vec.EXTINT & (1 << i)) != 0) {
-            external_interrupt_handler(i); // there's no latch register to determine what the new state of the pin is -- punt to the app.
+            external_interrupt_handler(i);
         }
     }
 }
