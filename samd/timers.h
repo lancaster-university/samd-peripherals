@@ -28,26 +28,29 @@
 
 #include "include/sam.h"
 
-const uint16_t prescaler[8];
+extern const uint16_t prescaler[8];
 
 #ifdef SAMD21
-const uint8_t tcc_cc_num[3];
-const uint8_t tc_gclk_ids[TC_INST_NUM];
-const uint8_t tcc_gclk_ids[3];
+extern const uint8_t tcc_cc_num[3];
+extern const uint8_t tc_gclk_ids[TC_INST_NUM];
+extern const uint8_t tcc_gclk_ids[3];
 #endif
 #ifdef SAMD51
-const uint8_t tcc_cc_num[5];
-const uint8_t tc_gclk_ids[TC_INST_NUM];
-const uint8_t tcc_gclk_ids[TCC_INST_NUM];
+extern const uint8_t tcc_cc_num[5];
+extern const uint8_t tc_gclk_ids[TC_INST_NUM];
+extern const uint8_t tcc_gclk_ids[TCC_INST_NUM];
 #endif
-Tc* const tc_insts[TC_INST_NUM];
-Tcc* const tcc_insts[TCC_INST_NUM];
+extern Tc* const tc_insts[TC_INST_NUM];
+extern Tcc* const tcc_insts[TCC_INST_NUM];
 
 void turn_on_clocks(bool is_tc, uint8_t index, uint32_t gclk_index);
 void tc_set_enable(Tc* tc, bool enable);
 void tcc_set_enable(Tcc* tcc, bool enable);
 void tc_wait_for_sync(Tc* tc);
 void tc_reset(Tc* tc);
+
+void tc_set_app_handler(void (*tc_app_handler_func)(uint8_t));
+void tcc_set_app_handler(void (*tcc_app_handler_func)(uint8_t));
 
 void tc_enable_interrupts(uint8_t tc_index);
 void tc_disable_interrupts(uint8_t tc_index);
