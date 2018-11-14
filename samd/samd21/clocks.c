@@ -45,13 +45,17 @@
 #endif
 
 bool gclk_enabled(uint8_t gclk) {
+#ifdef PY
     common_hal_mcu_disable_interrupts();
+#endif
     // Explicitly do a byte write so the peripheral knows we're just wanting to read the channel
     // rather than write to it.
     *((uint8_t*) &GCLK->GENCTRL.reg) = gclk;
     while (GCLK->STATUS.bit.SYNCBUSY == 1) {}
     bool enabled = GCLK->GENCTRL.bit.GENEN;
+#ifdef PY
     common_hal_mcu_enable_interrupts();
+#endif
     return enabled;
 }
 
@@ -196,29 +200,41 @@ void clock_init(void)
 }
 
 static bool clk_enabled(uint8_t clk) {
+#ifdef PY
     common_hal_mcu_disable_interrupts();
+#endif
     *((uint8_t*) &GCLK->CLKCTRL.reg) = clk;
     while (GCLK->STATUS.bit.SYNCBUSY == 1) {}
     bool enabled = GCLK->CLKCTRL.bit.CLKEN;
+#ifdef PY
     common_hal_mcu_enable_interrupts();
+#endif
     return enabled;
 }
 
 static uint8_t clk_get_generator(uint8_t clk) {
+#ifdef PY
     common_hal_mcu_disable_interrupts();
+#endif
     *((uint8_t*) &GCLK->CLKCTRL.reg) = clk;
     while (GCLK->STATUS.bit.SYNCBUSY == 1) {}
     uint8_t gen = GCLK->CLKCTRL.bit.GEN;
+#ifdef PY
     common_hal_mcu_enable_interrupts();
+#endif
     return gen;
 }
 
 static uint8_t generator_get_source(uint8_t gen) {
+#ifdef PY
     common_hal_mcu_disable_interrupts();
+#endif
     *((uint8_t*) &GCLK->GENCTRL.reg) = gen;
     while (GCLK->STATUS.bit.SYNCBUSY == 1) {}
     uint8_t src = GCLK->GENCTRL.bit.SRC;
+#ifdef PY
     common_hal_mcu_enable_interrupts();
+#endif
     return src;
 }
 
@@ -298,7 +314,9 @@ uint32_t clock_get_frequency(uint8_t type, uint8_t index) {
 
         uint8_t gen = clk_get_generator(index);
 
+#ifdef PY
         common_hal_mcu_disable_interrupts();
+#endif
         *((uint8_t*) &GCLK->GENCTRL.reg) = gen;
         *((uint8_t*) &GCLK->GENDIV.reg) = gen;
         while (GCLK->STATUS.bit.SYNCBUSY == 1) {}
@@ -312,8 +330,9 @@ uint32_t clock_get_frequency(uint8_t type, uint8_t index) {
             if (!div)
                 div = 1;
         }
+#ifdef PY
         common_hal_mcu_enable_interrupts();
-
+#endif
         return osc_get_frequency(src) / div;
     }
     if (type == 2 && index == 0) {
