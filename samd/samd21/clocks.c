@@ -31,10 +31,12 @@
 
 #include "hal/include/hal_flash.h"
 
+#ifdef PY
 #include "bindings/samd/Clock.h"
 #include "shared-bindings/microcontroller/__init__.h"
 
 #include "py/runtime.h"
+#endif
 
 #ifdef EXPRESS_BOARD
 #define INTERNAL_CIRCUITPY_CONFIG_START_ADDR (0x00040000 - NVMCTRL_ROW_SIZE - CIRCUITPY_INTERNAL_NVM_SIZE)
@@ -367,6 +369,7 @@ int clock_set_calibration(uint8_t type, uint8_t index, uint32_t val) {
 }
 
 void save_usb_clock_calibration(void) {
+#ifdef PY
     #ifndef CALIBRATE_CRYSTALLESS
     return;
     #endif
@@ -399,8 +402,10 @@ void save_usb_clock_calibration(void) {
         desc.dev.hw = NVMCTRL;
         flash_write(&desc, (uint32_t) INTERNAL_CIRCUITPY_CONFIG_START_ADDR, page_buffer, NVMCTRL_ROW_SIZE);
     }
+#endif
 }
 
+#ifdef PY
 #ifdef SAMD21_EXPOSE_ALL_CLOCKS
 CLOCK_SOURCE(XOSC);
 CLOCK_SOURCE(GCLKIN);
@@ -514,3 +519,4 @@ STATIC const mp_rom_map_elem_t samd_clock_global_dict_table[] = {
 #endif
 };
 MP_DEFINE_CONST_DICT(samd_clock_globals, samd_clock_global_dict_table);
+#endif
