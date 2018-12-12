@@ -33,8 +33,13 @@
 #ifdef PY
 #include "common-hal/pulseio/PulseOut.h"
 #else
-static void (*tc_app_handler)(uint8_t) = NULL;
-static void (*tcc_app_handler)(uint8_t) = NULL;
+
+void dummy_app_handler(uint8_t instance)
+{
+}
+
+static void (*tc_app_handler)(uint8_t) = dummy_app_handler;
+static void (*tcc_app_handler)(uint8_t) = dummy_app_handler;
 #endif
 
 const uint16_t prescaler[8] = {1, 2, 4, 8, 16, 64, 256, 1024};
@@ -113,9 +118,9 @@ void shared_timer_handler(bool is_tc, uint8_t index)
         pulseout_interrupt_handler(index);
     }
 #else
-    if (is_tc && tc_app_handler)
+    if (is_tc)
         tc_app_handler(index);
-    else if (tcc_app_handler)
+    else
         tcc_app_handler(index);
 #endif
 }
