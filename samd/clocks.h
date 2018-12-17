@@ -33,11 +33,15 @@
 #include "include/sam.h"
 #include "mpconfigboard.h" // for BOARD_HAS_CRYSTAL
 
+#define CLK_GEN_8MHZ 4
+
 #ifdef SAMD51
 #define CLOCK_48MHZ GCLK_GENCTRL_SRC_DFLL_Val
+#define CLK_GEN_48MHZ 1
 #endif
 #ifdef SAMD21
 #define CLOCK_48MHZ GCLK_GENCTRL_SRC_DFLL48M_Val
+#define CLK_GEN_48MHZ 0
 #endif
 
 #define CORE_GCLK 0
