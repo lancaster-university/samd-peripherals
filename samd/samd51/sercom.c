@@ -27,6 +27,7 @@
 #include "hal/include/hal_adc_sync.h"
 #include "hpl/gclk/hpl_gclk_base.h"
 #include "hri/hri_mclk_d51.h"
+#include "clocks.h"
 
 // The clock initializer values are rather random, so we need to put them in
 // tables for lookup. We can't compute them.
@@ -63,11 +64,18 @@ static const uint8_t SERCOMx_GCLK_ID_SLOW[] = {
 
 Sercom* sercom_insts[SERCOM_INST_NUM] = SERCOM_INSTS;
 
+#if SERCOM_100MHZ_CLOCK
+#define SERCOM_CLOCK CLK_GEN_100MHZ
+#else
+#define SERCOM_CLOCK CLK_GEN_48MHZ
+#error "blah"
+#endif
+
 // Clock initialization as done in Atmel START.
 void samd_peripherals_sercom_clock_init(Sercom* sercom, uint8_t sercom_index) {
 	hri_gclk_write_PCHCTRL_reg(GCLK,
                                    SERCOMx_GCLK_ID_CORE[sercom_index],
-                                   GCLK_PCHCTRL_GEN_GCLK1_Val | (1 << GCLK_PCHCTRL_CHEN_Pos));
+                                   SERCOM_CLOCK | (1 << GCLK_PCHCTRL_CHEN_Pos));
 	hri_gclk_write_PCHCTRL_reg(GCLK,
                                    SERCOMx_GCLK_ID_SLOW[sercom_index],
                                    GCLK_PCHCTRL_GEN_GCLK3_Val | (1 << GCLK_PCHCTRL_CHEN_Pos));

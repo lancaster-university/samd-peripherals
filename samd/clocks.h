@@ -44,6 +44,10 @@
 #define CLK_GEN_48MHZ 0
 #endif
 
+#ifdef SERCOM_100MHZ_CLOCK
+#define CLK_GEN_100MHZ 6
+#endif
+
 #define CORE_GCLK 0
 
 uint8_t find_free_gclk(uint16_t divisor);
