@@ -45,6 +45,7 @@ static uint8_t channel_handler[EIC_EXTINT_NUM];
 void (*app_handler)(uint8_t) = NULL;
 
 void external_interrupt_handler(uint8_t channel) {
+    EIC->INTFLAG.reg = (1 << channel) << EIC_INTFLAG_EXTINT_Pos;
     uint8_t handler = channel_handler[channel];
 
 #ifdef PY
@@ -58,8 +59,6 @@ void external_interrupt_handler(uint8_t channel) {
     if (handler == EIC_HANDLER_APP && app_handler) {
         app_handler(channel);
     }
-
-    EIC->INTFLAG.reg = (1 << channel) << EIC_INTFLAG_EXTINT_Pos;
 }
 
 void configure_eic_channel(uint8_t eic_channel, uint32_t sense_setting) {
