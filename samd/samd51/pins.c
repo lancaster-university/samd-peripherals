@@ -133,7 +133,7 @@ PIN(PA01, EXTINT_CHANNEL(1), NO_ADC, NO_ADC,
     NO_TOUCH,
     NO_SERCOM,
     SERCOM(1, 1),
-    TC(2, 0),
+    TC(2, 1),
     NO_TIMER,
     NO_TIMER)
 #endif
@@ -487,7 +487,7 @@ PIN(PB14, EXTINT_CHANNEL(14), NO_ADC, NO_ADC,
 #ifdef PIN_PB15
 PIN(PB15, EXTINT_CHANNEL(15), NO_ADC, NO_ADC,
     #ifdef PINMUX_PB15B_ADC0_PTCXY29
-    TOUCH(28),
+    TOUCH(29),
     #else
     NO_TOUCH,
     #endif
@@ -910,7 +910,7 @@ PIN(PB19, EXTINT_CHANNEL(3), NO_ADC, NO_ADC, NO_TOUCH,
 #endif
 #ifdef PIN_PB20
 PIN(PB20, EXTINT_CHANNEL(4), NO_ADC, NO_ADC, NO_TOUCH,
-    SERCOM(5, 0),
+    SERCOM(3, 0),
     #ifdef SERCOM7
     SERCOM(7, 1),
     #else
@@ -922,7 +922,7 @@ PIN(PB20, EXTINT_CHANNEL(4), NO_ADC, NO_ADC, NO_TOUCH,
 #endif
 #ifdef PIN_PB21
 PIN(PB21, EXTINT_CHANNEL(5), NO_ADC, NO_ADC, NO_TOUCH,
-    SERCOM(5, 1),
+    SERCOM(3, 1),
     #ifdef SERCOM7
     SERCOM(7, 0),
     #else
