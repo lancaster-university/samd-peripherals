@@ -47,6 +47,7 @@ void turn_on_cpu_interrupt(uint8_t eic_channel) {
     (void) eic_channel;
 
     NVIC_DisableIRQ(EIC_IRQn);
+    NVIC_SetPriority(EIC_IRQn, 0);
     NVIC_ClearPendingIRQ(EIC_IRQn);
     NVIC_EnableIRQ(EIC_IRQn);
 }
@@ -77,7 +78,7 @@ bool eic_channel_free(uint8_t eic_channel) {
            (EIC->EVCTRL.vec.EXTINTEO & mask) == 0;
 }
 
-void EIC_Handler(void) {
+__attribute((__weak__)) void EIC_Handler(void) {
     for (uint8_t i = 0; i < 16; i++) {
         if ((EIC->INTFLAG.vec.EXTINT & (1 << i)) != 0) {
             external_interrupt_handler(i);

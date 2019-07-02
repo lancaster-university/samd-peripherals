@@ -30,6 +30,8 @@
 
 #include "hpl/gclk/hpl_gclk_base.h"
 
+#ifdef I2S
+
 void turn_on_i2s(void) {
     // Make sure the I2S peripheral is running so we can see if the resources we need are free.
     hri_mclk_set_APBDMASK_I2S_bit(MCLK);
@@ -50,3 +52,5 @@ void i2s_set_serializer_enable(uint8_t serializer, bool enable) {
         while (I2S->SYNCBUSY.bit.RXEN == 1) {}
     }
 }
+
+#endif

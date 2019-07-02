@@ -33,6 +33,8 @@
 #include "hpl/pm/hpl_pm_base.h"
 #endif
 
+#ifdef I2S
+
 void i2s_set_enable(bool enable) {
     while (I2S->SYNCBUSY.bit.ENABLE == 1) {}
     I2S->CTRLA.bit.ENABLE = enable;
@@ -44,3 +46,5 @@ void i2s_set_clock_unit_enable(uint8_t clock_unit, bool enable) {
     I2S->CTRLA.vec.CKEN = 1 << clock_unit;
     while ((I2S->SYNCBUSY.vec.CKEN & (1 << clock_unit)) != 0) {}
 }
+
+#endif

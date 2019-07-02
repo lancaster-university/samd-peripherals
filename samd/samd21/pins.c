@@ -76,6 +76,7 @@
 // This macro is used to simplify pin definition in boards/<board>/pins.c
 
 #ifdef SAMD_PIN_ARRAY
+
 #define PIN(p_name, p_extint, p_adc, p_touch, \
             p_primary_sercom, p_secondary_sercom, \
             p_primary_timer, p_secondary_timer) \
@@ -91,7 +92,6 @@
 
 const mcu_pin_obj_t samd_pins[] = {
 #else
-
 #define PIN(p_name, p_extint, p_adc, p_touch, \
             p_primary_sercom, p_secondary_sercom, \
             p_primary_timer, p_secondary_timer) \
@@ -580,4 +580,6 @@ PIN(NONE, NO_EXTINT, NO_ADC, NO_TOUCH,
     NO_TIMER,
     NO_TIMER)
 };
+
+const int samd_pins_len = sizeof(samd_pins) / sizeof(mcu_pin_obj_t);
 #endif

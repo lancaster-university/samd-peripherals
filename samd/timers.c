@@ -26,11 +26,20 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #include "timers.h"
 
 #ifdef PY
 #include "common-hal/pulseio/PulseOut.h"
+#else
+
+void dummy_app_handler(uint8_t instance)
+{
+}
+
+static void (*tc_app_handler)(uint8_t) = dummy_app_handler;
+static void (*tcc_app_handler)(uint8_t) = dummy_app_handler;
 #endif
 
 const uint16_t prescaler[8] = {1, 2, 4, 8, 16, 64, 256, 1024};
@@ -89,12 +98,30 @@ void tc_reset(Tc* tc) {
     }
 }
 
-void shared_timer_handler(bool is_tc, uint8_t index) {
+#ifndef PY
+void tc_set_app_handler(void (*tc_app_handler_func)(uint8_t))
+{
+    tc_app_handler = tc_app_handler_func;
+}
+
+void tcc_set_app_handler(void (*tcc_app_handler_func)(uint8_t))
+{
+    tcc_app_handler = tcc_app_handler_func;
+}
+#endif
+
+void shared_timer_handler(bool is_tc, uint8_t index)
+{
 #ifdef PY
     // Add calls to interrupt handlers for specific functionality here.
     if (is_tc) {
         pulseout_interrupt_handler(index);
     }
+#else
+    if (is_tc)
+        tc_app_handler(index);
+    else
+        tcc_app_handler(index);
 #endif
 }
 

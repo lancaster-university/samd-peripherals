@@ -105,6 +105,18 @@ static void init_clock_source_dpll0(void)
     while (!(OSCCTRL->Dpll[0].DPLLSTATUS.bit.LOCK || OSCCTRL->Dpll[0].DPLLSTATUS.bit.CLKRDY)) {}
 }
 
+#ifdef CLK_GEN_100MHZ
+static void init_clock_source_dpll1(void)
+{
+    GCLK->PCHCTRL[OSCCTRL_GCLK_ID_FDPLL1].reg = GCLK_PCHCTRL_CHEN | GCLK_PCHCTRL_GEN(5);
+    OSCCTRL->Dpll[1].DPLLRATIO.reg = OSCCTRL_DPLLRATIO_LDRFRAC(0) | OSCCTRL_DPLLRATIO_LDR(49);
+    OSCCTRL->Dpll[1].DPLLCTRLB.reg = OSCCTRL_DPLLCTRLB_REFCLK(0);
+    OSCCTRL->Dpll[1].DPLLCTRLA.reg = OSCCTRL_DPLLCTRLA_ENABLE;
+
+    while (!(OSCCTRL->Dpll[1].DPLLSTATUS.bit.LOCK || OSCCTRL->Dpll[1].DPLLSTATUS.bit.CLKRDY)) {}
+}
+#endif
+
 void clock_init(void) {
     // DFLL48M is enabled by default
 
@@ -123,8 +135,14 @@ void clock_init(void) {
     enable_clock_generator_sync(1, GCLK_GENCTRL_SRC_DFLL_Val, 1, false);
     enable_clock_generator_sync(4, GCLK_GENCTRL_SRC_DPLL0_Val, 1, false);
     enable_clock_generator_sync(5, GCLK_GENCTRL_SRC_DFLL_Val, 24, false);
-
+#ifdef CLK_GEN_100MHZ
+    enable_clock_generator_sync(CLK_GEN_100MHZ, GCLK_GENCTRL_SRC_DPLL1_Val, 1, false);
+#endif
+    
     init_clock_source_dpll0();
+#ifdef CLK_GEN_100MHZ
+    init_clock_source_dpll1();
+#endif
 
     // Do this after all static clock init so that they aren't used dynamically.
     init_dynamic_clocks();
