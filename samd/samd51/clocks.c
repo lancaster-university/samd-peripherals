@@ -28,10 +28,12 @@
 
 #include "hpl_gclk_config.h"
 
+#ifdef PY
 #include "bindings/samd/Clock.h"
 #include "shared-bindings/microcontroller/__init__.h"
 
 #include "py/runtime.h"
+#endif
 
 bool gclk_enabled(uint8_t gclk) {
     return GCLK->GENCTRL[gclk].bit.GENEN;
@@ -103,6 +105,18 @@ static void init_clock_source_dpll0(void)
     while (!(OSCCTRL->Dpll[0].DPLLSTATUS.bit.LOCK || OSCCTRL->Dpll[0].DPLLSTATUS.bit.CLKRDY)) {}
 }
 
+#ifdef CLK_GEN_100MHZ
+static void init_clock_source_dpll1(void)
+{
+    GCLK->PCHCTRL[OSCCTRL_GCLK_ID_FDPLL1].reg = GCLK_PCHCTRL_CHEN | GCLK_PCHCTRL_GEN(5);
+    OSCCTRL->Dpll[1].DPLLRATIO.reg = OSCCTRL_DPLLRATIO_LDRFRAC(0) | OSCCTRL_DPLLRATIO_LDR(49);
+    OSCCTRL->Dpll[1].DPLLCTRLB.reg = OSCCTRL_DPLLCTRLB_REFCLK(0);
+    OSCCTRL->Dpll[1].DPLLCTRLA.reg = OSCCTRL_DPLLCTRLA_ENABLE;
+
+    while (!(OSCCTRL->Dpll[1].DPLLSTATUS.bit.LOCK || OSCCTRL->Dpll[1].DPLLSTATUS.bit.CLKRDY)) {}
+}
+#endif
+
 void clock_init(void) {
     // DFLL48M is enabled by default
 
@@ -121,8 +135,14 @@ void clock_init(void) {
     enable_clock_generator_sync(1, GCLK_GENCTRL_SRC_DFLL_Val, 1, false);
     enable_clock_generator_sync(4, GCLK_GENCTRL_SRC_DPLL0_Val, 1, false);
     enable_clock_generator_sync(5, GCLK_GENCTRL_SRC_DFLL_Val, 24, false);
-
+#ifdef CLK_GEN_100MHZ
+    enable_clock_generator_sync(CLK_GEN_100MHZ, GCLK_GENCTRL_SRC_DPLL1_Val, 1, false);
+#endif
+    
     init_clock_source_dpll0();
+#ifdef CLK_GEN_100MHZ
+    init_clock_source_dpll1();
+#endif
 
     // Do this after all static clock init so that they aren't used dynamically.
     init_dynamic_clocks();
@@ -343,6 +363,8 @@ int clock_set_calibration(uint8_t type, uint8_t index, uint32_t val) {
 void save_usb_clock_calibration(void) {
 }
 
+#ifdef PY
+
 #include <instance/can0.h>
 #include <instance/can1.h>
 #include <instance/i2s.h>
@@ -478,3 +500,5 @@ STATIC const mp_rom_map_elem_t samd_clock_global_dict_table[] = {
     CLOCK_ENTRY(RTC),
 };
 MP_DEFINE_CONST_DICT(samd_clock_globals, samd_clock_global_dict_table);
+
+#endif // PY

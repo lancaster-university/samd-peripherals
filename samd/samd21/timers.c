@@ -29,7 +29,9 @@
 
 #include "samd/timers.h"
 
-//#include "common-hal/pulseio/PulseOut.h"
+#ifdef PY
+#include "common-hal/pulseio/PulseOut.h"
+#endif
 
 #include "hpl/gclk/hpl_gclk_base.h"
 
